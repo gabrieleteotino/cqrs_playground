@@ -3,7 +3,7 @@ using CQRSlite.Events;
 
 namespace Domain.Events
 {
-    internal class EmployeeAssignedToLocationEvent : BaseEvent
+    public class EmployeeAssignedToLocationEvent : BaseEvent
     {
         public readonly int EmployeeID;
         public readonly int NewLocationID;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Domain.ReadModel.Repositories
 {
-    interface ILocationRepository : IBaseRepository<ReadModel.LocationRM>
+    public interface ILocationRepository : IBaseRepository<ReadModel.LocationRM>
     {
         // TODO wtf why is not this in IBaseRepository?
         IEnumerable<LocationRM> GetAll();

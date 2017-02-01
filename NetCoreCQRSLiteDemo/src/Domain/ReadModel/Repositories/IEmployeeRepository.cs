@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Domain.ReadModel.Repositories
 {
-    interface IEmployeeRepository : IBaseRepository<ReadModel.EmployeeRM>
+    public interface IEmployeeRepository : IBaseRepository<ReadModel.EmployeeRM>
     {
         // TODO wtf why is not this in IBaseRepository?
         IEnumerable<EmployeeRM> GetAll();
