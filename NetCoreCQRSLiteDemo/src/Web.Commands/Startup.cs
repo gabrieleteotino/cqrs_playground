@@ -64,8 +64,11 @@ namespace Web.Commands
             AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
-
+                cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
             });
+            services.AddSingleton(AutoMapper.Mapper.Configuration);
+            services.AddScoped<AutoMapper.IMapper>(sp =>
+                new AutoMapper.Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
 
             // Redis
             services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(provider => StackExchange.Redis.ConnectionMultiplexer.Connect("localhost"));

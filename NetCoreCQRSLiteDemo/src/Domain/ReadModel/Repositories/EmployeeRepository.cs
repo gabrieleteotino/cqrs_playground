@@ -8,7 +8,7 @@ namespace Domain.ReadModel.Repositories
 {
     public class EmployeeRepository : BaseRepository, IEmployeeRepository
     {
-        public EmployeeRepository(IConnectionMultiplexer redis, string nameSpace) : base(redis, nameSpace) { }
+        public EmployeeRepository(IConnectionMultiplexer redis) : base(redis, "employee") { }
 
         #region IEmployeeRepository
         public IEnumerable<EmployeeRM> GetAll()

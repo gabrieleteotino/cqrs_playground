@@ -8,7 +8,7 @@ namespace Domain.ReadModel.Repositories
 {
     public class LocationRepository : BaseRepository, ILocationRepository
     {
-        public LocationRepository(IConnectionMultiplexer redis, string nameSpace) : base(redis, nameSpace) { }
+        public LocationRepository(IConnectionMultiplexer redis) : base(redis, "location") { }
 
         #region ILocationRepository
         public LocationRM GetByID(int locationID)

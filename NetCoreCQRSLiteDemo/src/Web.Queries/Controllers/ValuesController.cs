@@ -14,7 +14,7 @@ namespace Web.Queries.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "Controller", "Queries" };
         }
 
         // GET api/values/5
