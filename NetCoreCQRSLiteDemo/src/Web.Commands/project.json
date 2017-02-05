@@ -6,9 +6,11 @@
     "dependencies": {
         "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.2.0",
         "Domain": "1.0.0-*",
+        "FluentValidation.AspNetCore": "6.4.0-rc3",
         "Microsoft.AspNetCore.Mvc": "1.1.1",
         "Microsoft.AspNetCore.Routing": "1.1.0",
         "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+        "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
         "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
         "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
         "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Domain.Commands;
+using FluentValidation.AspNetCore;
 
 namespace Web.Commands
 {
@@ -29,7 +30,12 @@ namespace Web.Commands
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            services
+                .AddMvc(options =>
+                {
+                    options.Filters.Add(new Filters.ValidationActionFilter());
+                })
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             // Add application services
             // CQRS
@@ -44,8 +50,15 @@ namespace Web.Commands
                 new CQRSlite.Cache.CacheRepository(
                     new CQRSlite.Domain.Repository(
                         y.GetService<CQRSlite.Events.IEventStore>()),
-                        y.GetService<CQRSlite.Events.IEventStore>(), 
+                        y.GetService<CQRSlite.Events.IEventStore>(),
                         y.GetService<CQRSlite.Cache.ICache>()));
+
+            // Repositories
+            services.AddScoped<Domain.ReadModel.Repositories.IEmployeeRepository, Domain.ReadModel.Repositories.EmployeeRepository>();
+            services.AddScoped<Domain.ReadModel.Repositories.ILocationRepository, Domain.ReadModel.Repositories.LocationRepository>();
+
+            //TODO terminate event and command handlers registration
+            //https://github.com/gautema/CQRSlite/blob/master/Sample/CQRSWeb/Startup.cs
 
             // AutoMapper
             AutoMapper.Mapper.Initialize(cfg =>
