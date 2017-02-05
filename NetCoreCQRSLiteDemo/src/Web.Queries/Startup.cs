@@ -29,6 +29,12 @@ namespace Web.Queries
         {
             // Add framework services.
             services.AddMvc();
+
+            // Add application services.
+            services.AddTransient<Domain.ReadModel.Repositories.IEmployeeRepository, Domain.ReadModel.Repositories.EmployeeRepository>();
+            services.AddTransient<Domain.ReadModel.Repositories.ILocationRepository, Domain.ReadModel.Repositories.LocationRepository>();
+
+            services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(provider => StackExchange.Redis.ConnectionMultiplexer.Connect("localhost"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
