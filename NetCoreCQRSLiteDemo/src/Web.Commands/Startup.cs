@@ -32,6 +32,21 @@ namespace Web.Commands
             services.AddMvc();
 
             // Add application services
+            // CQRS
+            services.AddSingleton<CQRSlite.Bus.InProcessBus>(new CQRSlite.Bus.InProcessBus());
+            services.AddSingleton<CQRSlite.Commands.ICommandSender>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            services.AddSingleton<CQRSlite.Events.IEventPublisher>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            services.AddSingleton<CQRSlite.Bus.IHandlerRegistrar>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            services.AddScoped<CQRSlite.Domain.ISession, CQRSlite.Domain.Session>();
+            services.AddSingleton<CQRSlite.Events.IEventStore, Domain.EventStore.InMemoryEventStore>();
+            services.AddScoped<CQRSlite.Cache.ICache, CQRSlite.Cache.MemoryCache>();
+            services.AddScoped<CQRSlite.Domain.IRepository>(y =>
+                new CQRSlite.Cache.CacheRepository(
+                    new CQRSlite.Domain.Repository(
+                        y.GetService<CQRSlite.Events.IEventStore>()),
+                        y.GetService<CQRSlite.Events.IEventStore>(), 
+                        y.GetService<CQRSlite.Cache.ICache>()));
+
             // AutoMapper
             AutoMapper.Mapper.Initialize(cfg =>
             {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Events
 {
+    // TODO i believe this class is an oversimplification and not useful at all in the long term
     public class BaseEvent : IEvent
     {
         #region IEvent
