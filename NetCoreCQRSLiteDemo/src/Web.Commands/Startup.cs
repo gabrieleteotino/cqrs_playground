@@ -46,12 +46,13 @@ namespace Web.Commands
             services.AddScoped<CQRSlite.Domain.ISession, CQRSlite.Domain.Session>();
             services.AddSingleton<CQRSlite.Events.IEventStore, Domain.EventStore.InMemoryEventStore>();
             services.AddScoped<CQRSlite.Cache.ICache, CQRSlite.Cache.MemoryCache>();
-            services.AddScoped<CQRSlite.Domain.IRepository>(y =>
-                new CQRSlite.Cache.CacheRepository(
-                    new CQRSlite.Domain.Repository(
-                        y.GetService<CQRSlite.Events.IEventStore>()),
-                        y.GetService<CQRSlite.Events.IEventStore>(),
-                        y.GetService<CQRSlite.Cache.ICache>()));
+            //services.AddScoped<CQRSlite.Domain.IRepository>(y =>
+            //    new CQRSlite.Cache.CacheRepository(
+            //        new CQRSlite.Domain.Repository(
+            //            y.GetService<CQRSlite.Events.IEventStore>()),
+            //            y.GetService<CQRSlite.Events.IEventStore>(),
+            //            y.GetService<CQRSlite.Cache.ICache>()));
+            services.AddScoped<CQRSlite.Domain.IRepository>(y => new CQRSlite.Domain.Repository(y.GetService<CQRSlite.Events.IEventStore>()));
 
             // Repositories
             services.AddScoped<Domain.ReadModel.Repositories.IEmployeeRepository, Domain.ReadModel.Repositories.EmployeeRepository>();
@@ -59,6 +60,37 @@ namespace Web.Commands
 
             //TODO terminate event and command handlers registration
             //https://github.com/gautema/CQRSlite/blob/master/Sample/CQRSWeb/Startup.cs
+            //Scan for commandhandlers and eventhandlers
+            //services.Scan(scan => scan
+            //    .FromAssemblies(typeof(InventoryCommandHandlers).GetTypeInfo().Assembly)
+            //        .AddClasses(classes => classes.Where(x => {
+            //            var allInterfaces = x.GetInterfaces();
+            //            return
+            //                allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICommandHandler<>)) ||
+            //                allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IEventHandler<>));
+            //        }))
+            //        .AsSelf()
+            //        .WithTransientLifetime()
+            //);
+
+            // Manual registration
+            // https://github.com/luisrudge/dotnetfloripa-es/blob/master/app/api/Startup.cs
+            // Command Handlers
+            services.AddTransient<CQRSlite.Commands.ICommandHandler<CreateEmployeeCommand>, Domain.CommandHandlers.EmployeeCommandHandler>();
+            services.AddTransient<CQRSlite.Commands.ICommandHandler<CreateLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
+            services.AddTransient<CQRSlite.Commands.ICommandHandler<AssignEmployeeToLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
+            services.AddTransient<CQRSlite.Commands.ICommandHandler<RemoveEmployeeFromLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
+
+            // Event Handlers
+            services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeCreatedEvent>, Domain.EventHandlers.EmployeeEventHandler>();
+            services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.LocationCreatedEvent>, Domain.EventHandlers.LocationEventHandler>();
+            services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeAssignedToLocationEvent>, Domain.EventHandlers.LocationEventHandler>();
+            services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeRemovedFromLocationEvent>, Domain.EventHandlers.LocationEventHandler>();
+
+            // TODO
+            // registra todos os handlers
+            //var registrar = new CQRSlite.Config.BusRegistrar(new DependencyResolver(services.BuildServiceProvider()));
+            //registrar.Register(typeof(Domain.CommandHandlers.EmployeeCommandHandler), typeof(Domain.CommandHandlers.LocationCommandHandler));
 
             // AutoMapper
             AutoMapper.Mapper.Initialize(cfg =>
