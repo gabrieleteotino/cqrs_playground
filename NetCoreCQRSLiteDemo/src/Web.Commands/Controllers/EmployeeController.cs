@@ -28,7 +28,7 @@ namespace Web.Commands.Controllers
 
         [HttpPost]
         [Route("create")]
-        public IActionResult Create(CreateEmployeeRequest request)
+        public IActionResult Create([FromBody]CreateEmployeeRequest request)
         {
             var command = _mapper.Map<Domain.Commands.CreateEmployeeCommand>(request);
             _commandSender.Send(command);

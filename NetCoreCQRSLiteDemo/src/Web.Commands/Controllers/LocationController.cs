@@ -30,7 +30,7 @@ namespace Web.Commands.Controllers
 
         [HttpPost]
         [Route("create")]
-        public ActionResult Create(CreateLocationRequest request)
+        public ActionResult Create([FromBody]CreateLocationRequest request)
         {
             var command = _mapper.Map<Domain.Commands.CreateLocationCommand>(request);
             _commandSender.Send(command);
@@ -39,7 +39,7 @@ namespace Web.Commands.Controllers
 
         [HttpPost]
         [Route("assignemployee")]
-        public ActionResult AssignEmployee(AssignEmployeeToLocationRequest request)
+        public ActionResult AssignEmployee([FromBody]AssignEmployeeToLocationRequest request)
         {
             var employee = _employeeRepo.GetByID(request.EmployeeID);
             if (employee.LocationID != 0)
