@@ -39,10 +39,16 @@ namespace Web.Commands
 
             // Add application services
             // CQRS
-            services.AddSingleton<CQRSlite.Bus.InProcessBus>(new CQRSlite.Bus.InProcessBus());
-            services.AddSingleton<CQRSlite.Commands.ICommandSender>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
-            services.AddSingleton<CQRSlite.Events.IEventPublisher>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
-            services.AddSingleton<CQRSlite.Bus.IHandlerRegistrar>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            //services.AddSingleton<CQRSlite.Bus.InProcessBus>(new CQRSlite.Bus.InProcessBus());
+            //services.AddSingleton<CQRSlite.Commands.ICommandSender>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            //services.AddSingleton<CQRSlite.Events.IEventPublisher>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            //services.AddSingleton<CQRSlite.Bus.IHandlerRegistrar>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
+            // CQRS Bus registration
+            var bus = new CQRSlite.Bus.InProcessBus();
+            services.AddSingleton<CQRSlite.Commands.ICommandSender>(bus);
+            services.AddSingleton<CQRSlite.Events.IEventPublisher>(bus);
+            services.AddSingleton<CQRSlite.Bus.IHandlerRegistrar>(bus);
+
             services.AddScoped<CQRSlite.Domain.ISession, CQRSlite.Domain.Session>();
             services.AddSingleton<CQRSlite.Events.IEventStore, Domain.EventStore.InMemoryEventStore>();
             services.AddScoped<CQRSlite.Cache.ICache, CQRSlite.Cache.MemoryCache>();
@@ -66,6 +72,7 @@ namespace Web.Commands
             // Command Handlers
             services.AddTransient<CQRSlite.Commands.ICommandHandler<CreateEmployeeCommand>, Domain.CommandHandlers.EmployeeCommandHandler>();
             services.AddTransient<Domain.CommandHandlers.EmployeeCommandHandler>();
+
             services.AddTransient<CQRSlite.Commands.ICommandHandler<CreateLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
             services.AddTransient<CQRSlite.Commands.ICommandHandler<AssignEmployeeToLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
             services.AddTransient<CQRSlite.Commands.ICommandHandler<RemoveEmployeeFromLocationCommand>, Domain.CommandHandlers.LocationCommandHandler>();
@@ -73,9 +80,12 @@ namespace Web.Commands
 
             // Event Handlers
             services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeCreatedEvent>, Domain.EventHandlers.EmployeeEventHandler>();
+            services.AddTransient<Domain.EventHandlers.EmployeeEventHandler>();
+
             services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.LocationCreatedEvent>, Domain.EventHandlers.LocationEventHandler>();
             services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeAssignedToLocationEvent>, Domain.EventHandlers.LocationEventHandler>();
             services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeRemovedFromLocationEvent>, Domain.EventHandlers.LocationEventHandler>();
+            services.AddTransient<Domain.EventHandlers.LocationEventHandler>();
 
             // Register command handlers in CQRSLite
             var serviceProvider = services.BuildServiceProvider();
