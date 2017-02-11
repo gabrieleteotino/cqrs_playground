@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Domain.Commands;
 using FluentValidation.AspNetCore;
+using AutoMapper;
 
 namespace Web.Commands
 {
@@ -66,7 +67,7 @@ namespace Web.Commands
 
             //TODO terminate event and command handlers registration
             //https://github.com/gautema/CQRSlite/blob/master/Sample/CQRSWeb/Startup.cs
-            
+
             // Manual registration
             // https://github.com/luisrudge/dotnetfloripa-es/blob/master/app/api/Startup.cs
             // Command Handlers
@@ -94,14 +95,26 @@ namespace Web.Commands
             registrar.Register(typeof(Domain.CommandHandlers.LocationCommandHandler));
 
             // AutoMapper
-            AutoMapper.Mapper.Initialize(cfg =>
+            //AutoMapper.Mapper.Initialize(cfg =>
+            //{
+            //    cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
+            //    cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
+            //});
+            //services.AddSingleton(AutoMapper.Mapper.Configuration);
+            //services.AddScoped<AutoMapper.IMapper>(sp =>
+            //    new AutoMapper.Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
+
+            //var mapperConfiguration = new AutoMapper.MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
+            //    cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
+            //});
+            //services.AddSingleton<AutoMapper.IMapper>(sp => mapperConfiguration.CreateMapper());
+            services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
                 cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
             });
-            services.AddSingleton(AutoMapper.Mapper.Configuration);
-            services.AddScoped<AutoMapper.IMapper>(sp =>
-                new AutoMapper.Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
 
             // Redis
             services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(provider => StackExchange.Redis.ConnectionMultiplexer.Connect("localhost"));
