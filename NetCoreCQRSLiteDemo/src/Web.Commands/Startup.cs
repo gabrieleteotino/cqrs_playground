@@ -39,11 +39,6 @@ namespace Web.Commands
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             // Add application services
-            // CQRS
-            //services.AddSingleton<CQRSlite.Bus.InProcessBus>(new CQRSlite.Bus.InProcessBus());
-            //services.AddSingleton<CQRSlite.Commands.ICommandSender>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
-            //services.AddSingleton<CQRSlite.Events.IEventPublisher>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
-            //services.AddSingleton<CQRSlite.Bus.IHandlerRegistrar>(y => y.GetService<CQRSlite.Bus.InProcessBus>());
             // CQRS Bus registration
             var bus = new CQRSlite.Bus.InProcessBus();
             services.AddSingleton<CQRSlite.Commands.ICommandSender>(bus);
@@ -88,37 +83,17 @@ namespace Web.Commands
             services.AddTransient<CQRSlite.Events.IEventHandler<Domain.Events.EmployeeRemovedFromLocationEvent>, Domain.EventHandlers.LocationEventHandler>();
             services.AddTransient<Domain.EventHandlers.LocationEventHandler>();
 
-            // Register command handlers in CQRSLite
-            var serviceProvider = services.BuildServiceProvider();
-            var registrar = new CQRSlite.Config.BusRegistrar(new DependencyResolver(serviceProvider));
-            //registrar.Register(typeof(Domain.CommandHandlers.EmployeeCommandHandler), typeof(Domain.CommandHandlers.LocationCommandHandler));
-            registrar.Register(typeof(Domain.CommandHandlers.LocationCommandHandler));
-
             // AutoMapper
-            //AutoMapper.Mapper.Initialize(cfg =>
-            //{
-            //    cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
-            //    cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
-            //});
-            //services.AddSingleton(AutoMapper.Mapper.Configuration);
-            //services.AddScoped<AutoMapper.IMapper>(sp =>
-            //    new AutoMapper.Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
-
-            //var mapperConfiguration = new AutoMapper.MapperConfiguration(cfg =>
-            //{
-            //    cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
-            //    cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
-            //});
-            //services.AddSingleton<AutoMapper.IMapper>(sp => mapperConfiguration.CreateMapper());
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfiles.EmployeeProfile>();
-                cfg.AddProfile<AutoMapperProfiles.LocationProfile>();
-            });
+            services.AddAutoMapper();
 
             // Redis
             services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(provider => StackExchange.Redis.ConnectionMultiplexer.Connect("localhost"));
 
+            // Register command handlers in CQRSLite
+            var serviceProvider = services.BuildServiceProvider();
+            var registrar = new CQRSlite.Config.BusRegistrar(new DependencyResolver(serviceProvider));
+            // Only one type for assembly is required
+            registrar.Register(typeof(Domain.CommandHandlers.LocationCommandHandler));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
