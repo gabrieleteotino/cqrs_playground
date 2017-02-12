@@ -33,7 +33,6 @@ namespace Domain.CommandHandlers
         #region ICommandHandler<Commands.AssignEmployeeToLocationCommand>
         public void Handle(AssignEmployeeToLocationCommand command)
         {
-            // TODO questo non dovrebbe riportare l'id della location?
             var location = _session.Get<WriteModel.Location>(command.Id);
             location.AddEmployee(command.EmployeeId);
             _session.Commit();

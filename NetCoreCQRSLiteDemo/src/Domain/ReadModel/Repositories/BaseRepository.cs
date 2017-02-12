@@ -46,7 +46,9 @@ namespace Domain.ReadModel.Repositories
             var key = MakeKey(keySuffix);
             var database = _redisConnection.GetDatabase();
             var serializedObject = database.StringGet(key);
-            if (serializedObject.IsNullOrEmpty) throw new ArgumentNullException(); //Throw a better exception than this, please
+            //if (serializedObject.IsNullOrEmpty) throw new ArgumentNullException(); //Throw a better exception than this, please
+            if (serializedObject.IsNullOrEmpty)
+                return default(T);
             return JsonConvert.DeserializeObject<T>(serializedObject.ToString());
         }
 

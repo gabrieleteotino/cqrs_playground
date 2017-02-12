@@ -18,7 +18,7 @@ namespace Web.Queries.Controllers
         {
             _locationRepo = locationRepo;
         }
-        // TODO sostiutire Ok con ObjectResult
+
         [HttpGet]
         [Route("{id}")]
         public IActionResult GetByID(int id)
@@ -26,7 +26,7 @@ namespace Web.Queries.Controllers
             var location = _locationRepo.GetByID(id);
             if (location == null)
             {
-                return BadRequest("No location with ID " + id.ToString() + " was found.");
+                return NotFound("No location with ID " + id.ToString() + " was found.");
             }
             return Ok(location);
         }

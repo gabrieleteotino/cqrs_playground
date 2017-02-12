@@ -12,7 +12,7 @@ using Web.Commands.Requests;
 
 namespace Web.Commands.Controllers
 {
-    [Route("locations")]
+    [Route("location")]
     public class LocationController : Controller
     {
         private IMapper _mapper;

@@ -10,7 +10,7 @@ using Domain.ReadModel.Repositories;
 namespace Web.Queries.Controllers
 {
     //[Route("api/[controller]")]
-    [Route("employees")]
+    [Route("employee")]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepo;
